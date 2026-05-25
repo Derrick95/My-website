@@ -1,0 +1,1101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LuxeStay | Premium Short-Lets & Concierge Kenya</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ─── RESET & TOKENS ─── */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --ink:    #0f1a14;
+  --gold:   #c5933a;
+  --gold-lt:#e8c47a;
+  --sand:   #f5efe6;
+  --sage:   #2a3d2f;
+  --white:  #ffffff;
+  --mist:   #f9f6f1;
+  --border: rgba(197,147,58,.18);
+  --shadow: 0 8px 40px rgba(15,26,20,.12);
+  --ff-display: 'Cormorant Garamond', Georgia, serif;
+  --ff-body:    'DM Sans', sans-serif;
+  --ease: cubic-bezier(.4,0,.2,1);
+  --nav-h: 72px;
+}
+
+html { scroll-behavior: smooth; }
+body { font-family: var(--ff-body); background: var(--mist); color: var(--ink); line-height: 1.65; overflow-x: hidden; }
+
+/* ─── CUSTOM CURSOR ─── */
+.cursor { position: fixed; width: 10px; height: 10px; border-radius: 50%; background: var(--gold); pointer-events: none; z-index: 9999; transform: translate(-50%,-50%); transition: width .2s, height .2s, opacity .3s; mix-blend-mode: multiply; }
+.cursor.grow { width: 36px; height: 36px; opacity: .4; }
+
+/* ─── NOISE OVERLAY ─── */
+body::before {
+  content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 9998;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+  opacity: .4;
+}
+
+/* ─── NAV ─── */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; height: var(--nav-h); z-index: 1000;
+  display: flex; align-items: center; justify-content: space-between; padding: 0 6%;
+  background: rgba(15,26,20,0); backdrop-filter: blur(0px);
+  transition: background .4s var(--ease), backdrop-filter .4s;
+  border-bottom: 1px solid transparent;
+}
+nav.scrolled {
+  background: rgba(15,26,20,.92); backdrop-filter: blur(20px);
+  border-bottom-color: var(--border);
+}
+.nav-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+.nav-logo-text { font-family: var(--ff-display); font-size: 1.35rem; font-weight: 600; color: var(--white); letter-spacing: 1px; }
+.nav-logo-text span { color: var(--gold); }
+.nav-links { display: flex; gap: 2.5rem; list-style: none; }
+.nav-links a { color: rgba(255,255,255,.8); font-size: .88rem; text-decoration: none; letter-spacing: .5px; text-transform: uppercase; font-weight: 500; transition: color .25s; position: relative; }
+.nav-links a::after { content:''; position:absolute; bottom:-3px; left:0; right:100%; height:1px; background:var(--gold); transition:right .3s var(--ease); }
+.nav-links a:hover { color: var(--gold); }
+.nav-links a:hover::after { right: 0; }
+.nav-cta { background: var(--gold); color: var(--ink) !important; padding: .5rem 1.4rem; border-radius: 2px; font-weight: 600 !important; }
+.nav-cta:hover { background: var(--gold-lt) !important; }
+.nav-cta::after { display: none !important; }
+
+/* Hamburger */
+.hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; background: none; border: none; padding: 4px; }
+.hamburger span { display: block; width: 24px; height: 2px; background: var(--white); transition: transform .3s, opacity .3s; }
+.hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.hamburger.open span:nth-child(2) { opacity: 0; }
+.hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+/* Mobile Menu */
+.mobile-menu {
+  position: fixed; inset: 0; background: var(--ink); z-index: 999; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2.5rem;
+  transform: translateX(100%); transition: transform .4s var(--ease); padding: 2rem;
+}
+.mobile-menu.open { transform: translateX(0); }
+.mobile-menu a { font-family: var(--ff-display); font-size: 2.2rem; font-weight: 300; color: var(--white); text-decoration: none; letter-spacing: 1px; transition: color .2s; }
+.mobile-menu a:hover { color: var(--gold); }
+
+/* ─── HERO ─── */
+.hero {
+  min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; padding-bottom: 8vh;
+  position: relative; overflow: hidden;
+  background: linear-gradient(165deg, rgba(15,26,20,.78) 0%, rgba(15,26,20,.55) 50%, rgba(42,61,47,.7) 100%),
+              url('https://images.unsplash.com/photo-1489749798305-4fea3ae63d43?auto=format&fit=crop&w=1800&q=80') center/cover no-repeat;
+}
+
+/* Animated gradient orb */
+.hero-orb {
+  position: absolute; width: 600px; height: 600px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(197,147,58,.25), transparent 70%);
+  top: -10%; left: -10%; animation: orbFloat 8s ease-in-out infinite;
+  pointer-events: none;
+}
+@keyframes orbFloat { 0%,100% { transform: translate(0,0) scale(1); } 50% { transform: translate(60px, 40px) scale(1.1); } }
+
+.hero-badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: rgba(197,147,58,.15); border: 1px solid var(--border);
+  color: var(--gold-lt); font-size: .78rem; letter-spacing: 2px; text-transform: uppercase;
+  padding: .45rem 1.2rem; border-radius: 100px; margin-bottom: 1.8rem;
+  animation: fadeUp .8s var(--ease) both;
+}
+.hero-badge::before { content:''; width: 6px; height: 6px; border-radius: 50%; background: var(--gold); animation: pulse 1.5s infinite; }
+@keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.4;transform:scale(.6)} }
+
+.hero-content { text-align: center; position: relative; z-index: 1; }
+.hero h1 {
+  font-family: var(--ff-display); font-size: clamp(3rem, 8vw, 6rem); font-weight: 300; line-height: 1.05; color: var(--white); letter-spacing: -1px; margin-bottom: .6rem;
+  animation: fadeUp .9s .1s var(--ease) both;
+}
+.hero h1 em { font-style: italic; color: var(--gold-lt); }
+.hero-subtitle {
+  font-size: clamp(.85rem, 1.5vw, 1rem); letter-spacing: 3px; text-transform: uppercase;
+  color: rgba(255,255,255,.6); margin-bottom: 2rem; font-weight: 300;
+  animation: fadeUp .9s .2s var(--ease) both;
+}
+.hero-desc {
+  color: rgba(255,255,255,.75); max-width: 500px; margin: 0 auto 2.5rem; font-size: 1.05rem;
+  animation: fadeUp .9s .3s var(--ease) both;
+}
+.hero-actions { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; animation: fadeUp .9s .4s var(--ease) both; }
+
+@keyframes fadeUp { from { opacity:0; transform:translateY(24px); } to { opacity:1; transform:translateY(0); } }
+
+/* ─── BUTTONS ─── */
+.btn-primary {
+  background: var(--gold); color: var(--ink); padding: .85rem 2.2rem;
+  text-decoration: none; font-weight: 600; font-size: .95rem; letter-spacing: .5px;
+  border: 2px solid var(--gold); border-radius: 2px; transition: all .25s var(--ease);
+  display: inline-flex; align-items: center; gap: 8px;
+}
+.btn-primary:hover { background: transparent; color: var(--gold); }
+.btn-outline {
+  background: transparent; color: var(--white); padding: .85rem 2.2rem;
+  text-decoration: none; font-weight: 500; font-size: .95rem;
+  border: 1px solid rgba(255,255,255,.4); border-radius: 2px; transition: all .25s var(--ease);
+}
+.btn-outline:hover { border-color: var(--gold); color: var(--gold); }
+
+/* Hero stats bar */
+.hero-stats {
+  position: absolute; bottom: 0; left: 0; right: 0;
+  background: rgba(15,26,20,.85); backdrop-filter: blur(20px);
+  display: flex; justify-content: center; gap: 0; border-top: 1px solid var(--border);
+  animation: fadeUp .9s .5s var(--ease) both;
+}
+.stat-item {
+  flex: 1; max-width: 200px; text-align: center; padding: 1.4rem 2rem;
+  border-right: 1px solid var(--border);
+}
+.stat-item:last-child { border-right: none; }
+.stat-num { font-family: var(--ff-display); font-size: 2rem; color: var(--gold); font-weight: 600; line-height: 1; display: block; margin-bottom: 4px; }
+.stat-label { font-size: .75rem; color: rgba(255,255,255,.5); letter-spacing: 1px; text-transform: uppercase; }
+
+/* ─── SECTION WRAPPER ─── */
+.section { padding: 7rem 6%; max-width: 1280px; margin: 0 auto; }
+.section-full { padding: 7rem 6%; }
+.section-label {
+  display: inline-block; font-size: .72rem; letter-spacing: 3px; text-transform: uppercase;
+  color: var(--gold); font-weight: 600; margin-bottom: 1rem; position: relative;
+  padding-left: 28px;
+}
+.section-label::before { content:''; position:absolute; left:0; top:50%; transform:translateY(-50%); width:18px; height:1px; background:var(--gold); }
+.section-heading { font-family: var(--ff-display); font-size: clamp(2rem, 4vw, 3.2rem); font-weight: 300; color: var(--ink); line-height: 1.15; margin-bottom: 1.5rem; }
+.section-heading em { font-style: italic; color: var(--sage); }
+
+/* ─── BOOKING WIDGET ─── */
+.booking-bar {
+  background: var(--white); border: 1px solid var(--border); border-radius: 4px;
+  display: grid; grid-template-columns: 1fr 1fr 1fr 1fr auto; gap: 0;
+  box-shadow: var(--shadow); overflow: hidden; max-width: 960px; margin: 0 auto;
+  position: relative; z-index: 10;
+}
+.booking-field { padding: 1.2rem 1.5rem; border-right: 1px solid var(--border); cursor: pointer; transition: background .2s; }
+.booking-field:hover { background: var(--sand); }
+.booking-field label { display: block; font-size: .7rem; letter-spacing: 1.5px; text-transform: uppercase; color: var(--gold); font-weight: 600; margin-bottom: .3rem; cursor: pointer; }
+.booking-field input, .booking-field select {
+  border: none; outline: none; background: transparent; font-family: var(--ff-body);
+  font-size: .95rem; color: var(--ink); width: 100%; cursor: pointer; font-weight: 500;
+}
+.booking-field select option { color: var(--ink); }
+.booking-btn { background: var(--gold); color: var(--ink); border: none; cursor: pointer; font-family: var(--ff-body); font-weight: 700; font-size: .9rem; letter-spacing: 1px; text-transform: uppercase; padding: 0 2.5rem; transition: background .2s; white-space: nowrap; }
+.booking-btn:hover { background: var(--sage); color: var(--white); }
+
+/* ─── ABOUT STRIP ─── */
+.about-strip { background: var(--ink); }
+.about-inner { display: grid; grid-template-columns: 1fr 1fr; gap: 6rem; align-items: center; padding: 7rem 6%; max-width: 1280px; margin: 0 auto; }
+.about-text .section-label { color: var(--gold-lt); }
+.about-text .section-heading { color: var(--white); }
+.about-text p { color: rgba(255,255,255,.65); font-size: 1.05rem; max-width: 460px; }
+.about-text .divider { width: 50px; height: 1px; background: var(--gold); margin: 2rem 0; }
+.about-pills { display: flex; gap: .75rem; flex-wrap: wrap; margin-top: 2rem; }
+.pill { background: rgba(197,147,58,.12); border: 1px solid var(--border); color: var(--gold-lt); padding: .4rem 1rem; border-radius: 100px; font-size: .8rem; letter-spacing: .5px; }
+.about-image-grid { display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: auto auto; gap: 12px; }
+.about-img { width: 100%; object-fit: cover; border-radius: 4px; }
+.about-img:nth-child(1) { height: 200px; }
+.about-img:nth-child(2) { height: 260px; margin-top: 30px; }
+.about-img:nth-child(3) { height: 260px; grid-column: 1/3; display: none; }
+
+/* ─── SERVICES ─── */
+.services-wrapper { background: var(--mist); }
+.services-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem; margin-top: 3.5rem; }
+.service-card {
+  background: var(--white); border: 1px solid var(--border); border-radius: 4px;
+  padding: 2.5rem 2rem; transition: all .35s var(--ease); position: relative; overflow: hidden;
+  cursor: pointer;
+}
+.service-card::after { content:''; position:absolute; bottom:0; left:0; right:100%; height:2px; background:var(--gold); transition:right .35s var(--ease); }
+.service-card:hover::after { right: 0; }
+.service-card:hover { transform: translateY(-4px); box-shadow: var(--shadow); }
+.service-icon-wrap {
+  width: 100%; height: 180px; border-radius: 6px; overflow: hidden;
+  margin-bottom: 1.5rem; position: relative;
+}
+.service-icon-wrap img {
+  width: 100%; height: 100%; object-fit: cover;
+  transition: transform .5s var(--ease);
+  display: block;
+}
+.service-card:hover .service-icon-wrap img { transform: scale(1.06); }
+.service-icon-wrap .svc-overlay {
+  position: absolute; inset: 0;
+  background: linear-gradient(160deg, rgba(15,26,20,.18) 0%, rgba(15,26,20,.45) 100%);
+  transition: opacity .3s;
+}
+.service-card:hover .service-icon-wrap .svc-overlay { opacity: .6; }
+.service-card h3 { font-family: var(--ff-display); font-size: 1.4rem; font-weight: 600; color: var(--ink); margin-bottom: .6rem; }
+.service-card p { font-size: .92rem; color: #666; line-height: 1.7; }
+.service-tag { display: inline-block; margin-top: 1.2rem; font-size: .72rem; letter-spacing: 1.5px; text-transform: uppercase; color: var(--gold); font-weight: 600; }
+
+/* ─── PROPERTIES ─── */
+.properties-wrapper { background: var(--white); }
+.prop-header { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 3rem; }
+.prop-filters { display: flex; gap: .5rem; }
+.prop-filter {
+  padding: .45rem 1.2rem; border-radius: 100px; font-size: .8rem; letter-spacing: .5px; cursor: pointer;
+  border: 1px solid var(--border); background: transparent; color: #666; transition: all .2s; font-family: var(--ff-body);
+}
+.prop-filter.active, .prop-filter:hover { background: var(--ink); color: var(--white); border-color: var(--ink); }
+.properties-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }
+.prop-card { border-radius: 4px; overflow: hidden; border: 1px solid var(--border); transition: transform .3s var(--ease), box-shadow .3s; cursor: pointer; }
+.prop-card:hover { transform: translateY(-6px); box-shadow: var(--shadow); }
+.prop-img-wrap { position: relative; overflow: hidden; }
+.prop-img { width: 100%; height: 240px; object-fit: cover; transition: transform .5s var(--ease); display: block; }
+.prop-card:hover .prop-img { transform: scale(1.05); }
+.prop-badge {
+  position: absolute; top: 14px; left: 14px;
+  background: var(--gold); color: var(--ink); font-size: .72rem; font-weight: 700;
+  letter-spacing: 1px; text-transform: uppercase; padding: .3rem .8rem; border-radius: 2px;
+}
+.prop-wishlist {
+  position: absolute; top: 12px; right: 14px;
+  background: rgba(255,255,255,.9); border: none; cursor: pointer;
+  width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+  font-size: 1rem; transition: transform .2s; color: #ccc;
+}
+.prop-wishlist:hover { transform: scale(1.15); }
+.prop-wishlist.active { color: #e74c3c; }
+.prop-body { padding: 1.5rem; }
+.prop-location { font-size: .75rem; letter-spacing: 1.5px; text-transform: uppercase; color: var(--gold); font-weight: 600; margin-bottom: .4rem; }
+.prop-name { font-family: var(--ff-display); font-size: 1.3rem; font-weight: 600; color: var(--ink); margin-bottom: .4rem; }
+.prop-meta { display: flex; gap: 1rem; font-size: .82rem; color: #999; margin-bottom: 1rem; }
+.prop-meta span { display: flex; align-items: center; gap: 4px; }
+.prop-footer { display: flex; align-items: center; justify-content: space-between; padding-top: 1rem; border-top: 1px solid var(--border); }
+.prop-price { font-family: var(--ff-display); font-size: 1.4rem; color: var(--ink); font-weight: 600; }
+.prop-price small { font-family: var(--ff-body); font-size: .75rem; color: #aaa; font-weight: 400; }
+.prop-book-btn {
+  background: var(--ink); color: var(--white); border: none; cursor: pointer;
+  font-family: var(--ff-body); font-size: .8rem; font-weight: 600; letter-spacing: .5px;
+  padding: .55rem 1.2rem; border-radius: 2px; transition: background .2s;
+}
+.prop-book-btn:hover { background: var(--gold); color: var(--ink); }
+
+/* ─── TERMS SECTION ─── */
+.terms-wrapper { background: var(--sage); }
+.terms-inner { max-width: 1280px; margin: 0 auto; padding: 7rem 6%; }
+.terms-inner .section-label { color: var(--gold-lt); }
+.terms-inner .section-heading { color: var(--white); }
+.terms-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.08); border-radius: 4px; overflow: hidden; margin-top: 3rem; }
+.term-card { background: rgba(255,255,255,.04); padding: 2.5rem 2rem; transition: background .3s; }
+.term-card:hover { background: rgba(255,255,255,.08); }
+.term-icon {
+  width: 100%; height: 160px; border-radius: 6px; overflow: hidden;
+  margin-bottom: 1.4rem; display: block; position: relative;
+}
+.term-icon img {
+  width: 100%; height: 100%; object-fit: cover; display: block;
+  transition: transform .5s cubic-bezier(.4,0,.2,1);
+  filter: brightness(.75) saturate(.9);
+}
+.term-card:hover .term-icon img { transform: scale(1.06); filter: brightness(.85) saturate(1); }
+.term-card h4 { font-family: var(--ff-display); font-size: 1.3rem; color: var(--gold-lt); margin-bottom: .7rem; }
+.term-card p { color: rgba(255,255,255,.6); font-size: .95rem; line-height: 1.7; }
+
+/* ─── TESTIMONIALS ─── */
+.testimonials-wrapper { background: var(--mist); }
+.testi-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; margin-top: 3.5rem; }
+.testi-card { background: var(--white); border: 1px solid var(--border); border-radius: 4px; padding: 2rem; position: relative; }
+.testi-card::before { content:'\201C'; position:absolute; top:12px; left:20px; font-family: var(--ff-display); font-size: 5rem; line-height: 1; color: var(--gold); opacity: .15; }
+.testi-stars { color: var(--gold); font-size: .9rem; margin-bottom: 1rem; letter-spacing: 2px; }
+.testi-text { font-size: .95rem; color: #555; line-height: 1.75; margin-bottom: 1.5rem; font-style: italic; }
+.testi-author { display: flex; align-items: center; gap: 10px; }
+.testi-avatar { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; background: var(--sand); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: .9rem; color: var(--gold); border: 1px solid var(--border); flex-shrink: 0; }
+.testi-name { font-weight: 600; font-size: .9rem; color: var(--ink); }
+.testi-place { font-size: .78rem; color: #aaa; }
+
+/* ─── CONTACT / BOOKING FORM ─── */
+.contact-wrapper { background: var(--ink); }
+.contact-inner { max-width: 1280px; margin: 0 auto; padding: 7rem 6%; display: grid; grid-template-columns: 1fr 1fr; gap: 6rem; align-items: start; }
+.contact-info .section-label { color: var(--gold-lt); }
+.contact-info .section-heading { color: var(--white); }
+.contact-info p { color: rgba(255,255,255,.6); margin-bottom: 2.5rem; font-size: 1rem; }
+.contact-detail { display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 1.5rem; }
+.contact-icon { width: 42px; height: 42px; border-radius: 50%; background: rgba(197,147,58,.12); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 1.1rem; flex-shrink: 0; }
+.contact-detail h5 { color: var(--gold); font-size: .75rem; letter-spacing: 1px; text-transform: uppercase; font-weight: 600; margin-bottom: .2rem; }
+.contact-detail p { color: rgba(255,255,255,.75); font-size: .95rem; margin-bottom: 0; }
+.contact-detail a { color: rgba(255,255,255,.75); text-decoration: none; transition: color .2s; }
+.contact-detail a:hover { color: var(--gold); }
+
+/* Form */
+.booking-form { background: var(--white); border-radius: 4px; padding: 2.5rem; }
+.booking-form h3 { font-family: var(--ff-display); font-size: 1.8rem; color: var(--ink); margin-bottom: 1.8rem; }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+.form-group { margin-bottom: 1.2rem; }
+.form-group label { display: block; font-size: .75rem; letter-spacing: 1.5px; text-transform: uppercase; color: var(--gold); font-weight: 600; margin-bottom: .45rem; }
+.form-group input, .form-group select, .form-group textarea {
+  width: 100%; border: 1px solid var(--border); border-radius: 2px; padding: .8rem 1rem;
+  font-family: var(--ff-body); font-size: .95rem; color: var(--ink); background: var(--mist);
+  outline: none; transition: border-color .2s;
+}
+.form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: var(--gold); background: var(--white); }
+.form-group textarea { height: 100px; resize: vertical; }
+.form-submit { width: 100%; background: var(--gold); color: var(--ink); border: none; cursor: pointer; font-family: var(--ff-body); font-weight: 700; font-size: .95rem; letter-spacing: 1px; text-transform: uppercase; padding: 1rem; border-radius: 2px; transition: all .25s; margin-top: .5rem; }
+.form-submit:hover { background: var(--ink); color: var(--gold); }
+.form-success { display: none; text-align: center; padding: 2rem; }
+.form-success .checkmark { font-size: 3rem; margin-bottom: 1rem; }
+.form-success h4 { font-family: var(--ff-display); font-size: 1.5rem; color: var(--ink); margin-bottom: .5rem; }
+.form-success p { color: #666; font-size: .95rem; }
+
+/* ─── FOOTER ─── */
+footer { background: #070e0a; border-top: 1px solid rgba(255,255,255,.05); }
+.footer-inner { max-width: 1280px; margin: 0 auto; padding: 4rem 6% 2rem; }
+.footer-top { display: grid; grid-template-columns: 1.5fr 1fr 1fr; gap: 4rem; margin-bottom: 3rem; }
+.footer-brand .logo-text { font-family: var(--ff-display); font-size: 1.5rem; color: var(--white); letter-spacing: 1px; margin-bottom: .5rem; }
+.footer-brand .logo-text span { color: var(--gold); }
+.footer-brand p { color: rgba(255,255,255,.4); font-size: .9rem; line-height: 1.7; max-width: 260px; }
+.footer-col h5 { font-size: .75rem; letter-spacing: 2px; text-transform: uppercase; color: var(--gold); font-weight: 600; margin-bottom: 1.2rem; }
+.footer-col ul { list-style: none; }
+.footer-col li { margin-bottom: .6rem; }
+.footer-col a { color: rgba(255,255,255,.45); font-size: .9rem; text-decoration: none; transition: color .2s; }
+.footer-col a:hover { color: var(--gold); }
+.footer-bottom { border-top: 1px solid rgba(255,255,255,.05); padding-top: 1.5rem; display: flex; justify-content: space-between; align-items: center; }
+.footer-bottom p { color: rgba(255,255,255,.25); font-size: .82rem; }
+
+/* ─── BOOKING MODAL ─── */
+.modal-overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,.7); z-index: 2000;
+  display: flex; align-items: center; justify-content: center; padding: 1.5rem;
+  opacity: 0; pointer-events: none; transition: opacity .3s var(--ease);
+}
+.modal-overlay.open { opacity: 1; pointer-events: all; }
+.modal {
+  background: var(--white); border-radius: 6px; padding: 2.5rem; max-width: 520px; width: 100%;
+  transform: translateY(30px); transition: transform .3s var(--ease);
+  max-height: 90vh; overflow-y: auto;
+}
+.modal-overlay.open .modal { transform: translateY(0); }
+.modal-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1.5rem; }
+.modal-header h3 { font-family: var(--ff-display); font-size: 1.8rem; color: var(--ink); }
+.modal-close { background: none; border: none; cursor: pointer; font-size: 1.4rem; color: #aaa; line-height: 1; padding: 4px; }
+.modal-close:hover { color: var(--ink); }
+.modal-prop-info { background: var(--mist); border-radius: 4px; padding: 1rem 1.2rem; margin-bottom: 1.5rem; display: flex; justify-content: space-between; align-items: center; }
+.modal-prop-name { font-weight: 600; font-size: .95rem; color: var(--ink); }
+.modal-prop-loc { font-size: .8rem; color: #999; margin-top: 2px; }
+.modal-prop-price { font-family: var(--ff-display); font-size: 1.4rem; color: var(--gold); font-weight: 600; }
+
+/* ─── SCROLL REVEAL ─── */
+.reveal { opacity: 0; transform: translateY(30px); transition: opacity .7s var(--ease), transform .7s var(--ease); }
+.reveal.visible { opacity: 1; transform: none; }
+.reveal-delay-1 { transition-delay: .1s; }
+.reveal-delay-2 { transition-delay: .2s; }
+.reveal-delay-3 { transition-delay: .3s; }
+.reveal-delay-4 { transition-delay: .4s; }
+
+/* ─── WHATSAPP FLOAT ─── */
+.whatsapp-float {
+  position: fixed; bottom: 28px; right: 28px; z-index: 900;
+  background: #25d366; color: var(--white); width: 58px; height: 58px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center; font-size: 1.6rem;
+  text-decoration: none; box-shadow: 0 4px 20px rgba(37,211,102,.4);
+  transition: transform .25s var(--ease), box-shadow .25s;
+}
+.whatsapp-float:hover { transform: scale(1.1); box-shadow: 0 6px 28px rgba(37,211,102,.5); }
+
+/* ─── RESPONSIVE ─── */
+@media (max-width: 1024px) {
+  .services-grid { grid-template-columns: repeat(2, 1fr); }
+  .properties-grid { grid-template-columns: repeat(2, 1fr); }
+  .testi-grid { grid-template-columns: repeat(2, 1fr); }
+  .about-inner { grid-template-columns: 1fr; gap: 3rem; }
+  .about-image-grid { display: none; }
+  .footer-top { grid-template-columns: 1fr 1fr; gap: 2rem; }
+}
+@media (max-width: 768px) {
+  :root { --nav-h: 60px; }
+  .nav-links { display: none; }
+  .hamburger { display: flex; }
+  .booking-bar { grid-template-columns: 1fr 1fr; }
+  .booking-field:nth-child(3), .booking-field:nth-child(4) { grid-column: span 1; }
+  .booking-btn { grid-column: 1 / -1; padding: 1.2rem; text-align: center; }
+  .services-grid { grid-template-columns: 1fr; }
+  .properties-grid { grid-template-columns: 1fr; }
+  .terms-grid { grid-template-columns: 1fr; gap: 0; }
+  .testi-grid { grid-template-columns: 1fr; }
+  .contact-inner { grid-template-columns: 1fr; gap: 3rem; }
+  .form-row { grid-template-columns: 1fr; }
+  .hero-stats { display: none; }
+  .prop-header { flex-direction: column; align-items: flex-start; gap: 1rem; }
+  .footer-top { grid-template-columns: 1fr; gap: 2rem; }
+  .footer-bottom { flex-direction: column; gap: .5rem; text-align: center; }
+}
+@media (max-width: 480px) {
+  .hero h1 { font-size: 2.2rem; }
+  .hero-actions { flex-direction: column; align-items: center; }
+  .booking-bar { grid-template-columns: 1fr; }
+  .booking-btn { padding: 1.2rem; }
+}
+</style>
+</head>
+<body>
+
+<!-- Custom Cursor -->
+<div class="cursor" id="cursor"></div>
+
+<!-- WhatsApp Float -->
+<a href="https://wa.me/254797729667" class="whatsapp-float" target="_blank" title="Chat on WhatsApp" aria-label="WhatsApp">💬</a>
+
+<!-- ─── NAV ─── -->
+<nav id="main-nav">
+  <a href="#" class="nav-logo">
+    <div class="nav-logo-text">LUXE<span>STAY</span></div>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#services">Services</a></li>
+    <li><a href="#properties">Properties</a></li>
+    <li><a href="#terms">Terms</a></li>
+    <li><a href="#contact">Contact</a></li>
+    <li><a href="#contact" class="nav-cta">Book Now</a></li>
+  </ul>
+  <button class="hamburger" id="hamburger" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- Mobile Menu -->
+<div class="mobile-menu" id="mobile-menu">
+  <a href="#about" onclick="closeMobileMenu()">About</a>
+  <a href="#services" onclick="closeMobileMenu()">Services</a>
+  <a href="#properties" onclick="closeMobileMenu()">Properties</a>
+  <a href="#terms" onclick="closeMobileMenu()">Terms</a>
+  <a href="#contact" onclick="closeMobileMenu()">Contact</a>
+  <a href="#contact" class="btn-primary" onclick="closeMobileMenu()">Book Now →</a>
+</div>
+
+<!-- ─── HERO ─── -->
+<header class="hero" id="home">
+  <div class="hero-orb"></div>
+  <div class="hero-content">
+    <div class="hero-badge">🌍 Serving Nairobi · Mombasa · Kisumu · Diani</div>
+    <h1>Kenya's Premier<br><em>Hospitality & Travel</em><br>Concierge</h1>
+    <p class="hero-subtitle">Luxury Short-Lets &amp; Bespoke Experiences</p>
+    <p class="hero-desc">Seamless premium accommodations, executive car hire, flight bookings, and safari curation — all under one roof.</p>
+    <div class="hero-actions">
+      <a href="#properties" class="btn-primary">Explore Properties →</a>
+      <a href="#contact" class="btn-outline">Get in Touch</a>
+    </div>
+  </div>
+  <div class="hero-stats">
+    <div class="stat-item"><span class="stat-num">50+</span><span class="stat-label">Premium Units</span></div>
+    <div class="stat-item"><span class="stat-num">5</span><span class="stat-label">Kenya Locations</span></div>
+    <div class="stat-item"><span class="stat-num">4</span><span class="stat-label">Core Services</span></div>
+    <div class="stat-item"><span class="stat-num">24/7</span><span class="stat-label">Concierge Support</span></div>
+  </div>
+</header>
+
+<!-- ─── BOOKING BAR ─── -->
+<div style="background: var(--white); padding: 2.5rem 6%; border-bottom: 1px solid var(--border);">
+  <div class="booking-bar">
+    <div class="booking-field">
+      <label for="dest">Destination</label>
+      <select id="dest">
+        <option value="">All Locations</option>
+        <option>Nairobi</option>
+        <option>Mombasa</option>
+        <option>Kisumu</option>
+        <option>Diani</option>
+        <option>Kakamega</option>
+      </select>
+    </div>
+    <div class="booking-field">
+      <label for="check-in">Check In</label>
+      <input type="date" id="check-in">
+    </div>
+    <div class="booking-field">
+      <label for="check-out">Check Out</label>
+      <input type="date" id="check-out">
+    </div>
+    <div class="booking-field">
+      <label for="guests">Guests</label>
+      <select id="guests">
+        <option>1 Guest</option>
+        <option>2 Guests</option>
+        <option>3 – 4 Guests</option>
+        <option>5+ Guests</option>
+      </select>
+    </div>
+    <button class="booking-btn" onclick="handleSearch()">Search →</button>
+  </div>
+</div>
+
+<!-- ─── ABOUT ─── -->
+<section class="about-strip" id="about">
+  <div class="about-inner">
+    <div class="about-text">
+      <div class="section-label">Executive Profile</div>
+      <h2 class="section-heading">An Integrated<br><em>Luxury Experience</em></h2>
+      <div class="divider"></div>
+      <p>I manage a high-end portfolio of premium short-let Airbnb listings across Kenya's top urban and leisure centres. Beyond elite accommodations, our operational ecosystem delivers a holistic travel network — from executive vehicle fleets and flight coordination to safari curation and bespoke concierge support.</p>
+      <div class="about-pills">
+        <span class="pill">Nairobi HQ</span>
+        <span class="pill">Licensed Operator</span>
+        <span class="pill">Corporate-Ready</span>
+        <span class="pill">24/7 Concierge</span>
+      </div>
+    </div>
+    <div class="about-image-grid">
+      <img src="https://images.unsplash.com/photo-1631049307264-da0ec9d70304?auto=format&fit=crop&w=600&q=80" alt="Luxury interior" class="about-img">
+      <img src="https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=600&q=80" alt="Premium bedroom" class="about-img">
+    </div>
+  </div>
+</section>
+
+<!-- ─── SERVICES ─── -->
+<section class="services-wrapper" id="services">
+  <div class="section">
+    <div class="section-label reveal">What We Offer</div>
+    <h2 class="section-heading reveal reveal-delay-1">Four Pillars of<br><em>Premium Service</em></h2>
+    <div class="services-grid">
+      <div class="service-card reveal reveal-delay-1">
+        <div class="service-icon-wrap">
+          <img src="https://images.unsplash.com/photo-1580587771525-78b9dba3b914?auto=format&fit=crop&w=800&q=80" alt="Luxury Property" loading="lazy">
+          <div class="svc-overlay"></div>
+        </div>
+        <h3>Luxury Short-Lets</h3>
+        <p>Fully tailored 1–5 bedroom premium properties in key city and leisure hubs. Each unit configured for comfort, connectivity, and style.</p>
+        <span class="service-tag">Ksh 5,000 – 10,000 / night →</span>
+      </div>
+      <div class="service-card reveal reveal-delay-2">
+        <div class="service-icon-wrap">
+          <img src="https://images.unsplash.com/photo-1544636331-e26879cd4d9b?auto=format&fit=crop&w=800&q=80" alt="Luxury Executive Car" loading="lazy">
+          <div class="svc-overlay"></div>
+        </div>
+        <h3>Executive Car Hire</h3>
+        <p>Luxury utility vehicles and executive sedans for airport transfers, corporate transit, and scenic road trips across Kenya.</p>
+        <span class="service-tag">Available on request →</span>
+      </div>
+      <div class="service-card reveal reveal-delay-3">
+        <div class="service-icon-wrap">
+          <img src="https://images.unsplash.com/photo-1436491865332-7a61a109cc05?auto=format&fit=crop&w=800&q=80" alt="Airplane Flight" loading="lazy">
+          <div class="svc-overlay"></div>
+        </div>
+        <h3>Flight Bookings</h3>
+        <p>Streamlined domestic and regional flight coordination tailored to your exact schedule and travel preferences.</p>
+        <span class="service-tag">All major routes →</span>
+      </div>
+      <div class="service-card reveal reveal-delay-4">
+        <div class="service-icon-wrap">
+          <img src="https://images.unsplash.com/photo-1516426122078-c23e76319801?auto=format&fit=crop&w=800&q=80" alt="Safari Game Drive Truck" loading="lazy">
+          <div class="svc-overlay"></div>
+        </div>
+        <h3>Park & Safari Bookings</h3>
+        <p>Direct permit handling, expert guides, and bespoke itinerary design for Kenya's leading game parks and coastal reserves.</p>
+        <span class="service-tag">Maasai Mara &amp; beyond →</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── PROPERTIES ─── -->
+<section class="properties-wrapper" id="properties">
+  <div class="section">
+    <div class="prop-header">
+      <div>
+        <div class="section-label reveal">Available Properties</div>
+        <h2 class="section-heading reveal reveal-delay-1">Our Location<br><em>Network</em></h2>
+      </div>
+      <div class="prop-filters">
+        <button class="prop-filter active" onclick="filterProps(this,'all')">All</button>
+        <button class="prop-filter" onclick="filterProps(this,'nairobi')">Nairobi</button>
+        <button class="prop-filter" onclick="filterProps(this,'coast')">Coastal</button>
+        <button class="prop-filter" onclick="filterProps(this,'western')">Western</button>
+      </div>
+    </div>
+    <div class="properties-grid" id="properties-grid">
+      <!-- Nairobi -->
+      <div class="prop-card reveal" data-region="nairobi">
+        <div class="prop-img-wrap">
+          <img src="https://images.unsplash.com/photo-1560448204-603b3fc33ddc?auto=format&fit=crop&w=800&q=80" alt="Nairobi Executive Suite" class="prop-img" loading="lazy">
+          <span class="prop-badge">Nairobi</span>
+          <button class="prop-wishlist" onclick="toggleWish(this)" aria-label="Save">♥</button>
+        </div>
+        <div class="prop-body">
+          <div class="prop-location">🏙 Westlands, Nairobi</div>
+          <div class="prop-name">Corporate Executive Suite</div>
+          <div class="prop-meta">
+            <span>🛏 4 Beds</span>
+            <span>🛁 3 Baths</span>
+            <span>👥 8 Guests</span>
+          </div>
+          <div class="prop-footer">
+            <div class="prop-price">Ksh 10,000 <small>/ night</small></div>
+            <button class="prop-book-btn" onclick="openModal('Corporate Executive Suite','Westlands, Nairobi','Ksh 10,000')">Book Now</button>
+          </div>
+        </div>
+      </div>
+      <!-- Nairobi 2 -->
+      <div class="prop-card reveal reveal-delay-1" data-region="nairobi">
+        <div class="prop-img-wrap">
+          <img src="https://images.unsplash.com/photo-1586023492125-27b2c045efd7?auto=format&fit=crop&w=800&q=80" alt="Kilimani Suite" class="prop-img" loading="lazy">
+          <span class="prop-badge">Nairobi</span>
+          <button class="prop-wishlist" onclick="toggleWish(this)" aria-label="Save">♥</button>
+        </div>
+        <div class="prop-body">
+          <div class="prop-location">🏙 Kilimani, Nairobi</div>
+          <div class="prop-name">Modern 2-Bed Apartment</div>
+          <div class="prop-meta">
+            <span>🛏 2 Beds</span>
+            <span>🛁 2 Baths</span>
+            <span>👥 4 Guests</span>
+          </div>
+          <div class="prop-footer">
+            <div class="prop-price">Ksh 7,000 <small>/ night</small></div>
+            <button class="prop-book-btn" onclick="openModal('Modern 2-Bed Apartment','Kilimani, Nairobi','Ksh 7,000')">Book Now</button>
+          </div>
+        </div>
+      </div>
+      <!-- Mombasa -->
+      <div class="prop-card reveal reveal-delay-2" data-region="coast">
+        <div class="prop-img-wrap">
+          <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=800&q=80" alt="Mombasa Coastal Unit" class="prop-img" loading="lazy">
+          <span class="prop-badge">Mombasa</span>
+          <button class="prop-wishlist" onclick="toggleWish(this)" aria-label="Save">♥</button>
+        </div>
+        <div class="prop-body">
+          <div class="prop-location">🌊 Nyali, Mombasa</div>
+          <div class="prop-name">Coastal Vacation Unit</div>
+          <div class="prop-meta">
+            <span>🛏 3 Beds</span>
+            <span>🛁 2 Baths</span>
+            <span>👥 6 Guests</span>
+          </div>
+          <div class="prop-footer">
+            <div class="prop-price">Ksh 8,500 <small>/ night</small></div>
+            <button class="prop-book-btn" onclick="openModal('Coastal Vacation Unit','Nyali, Mombasa','Ksh 8,500')">Book Now</button>
+          </div>
+        </div>
+      </div>
+      <!-- Diani -->
+      <div class="prop-card reveal" data-region="coast">
+        <div class="prop-img-wrap">
+          <img src="https://images.unsplash.com/photo-1691161510065-298039a5b51b?auto=format&fit=crop&w=800&q=80" alt="Diani Beach Villa" class="prop-img" loading="lazy">
+          <span class="prop-badge">Diani</span>
+          <button class="prop-wishlist" onclick="toggleWish(this)" aria-label="Save">♥</button>
+        </div>
+        <div class="prop-body">
+          <div class="prop-location">🏖 Diani Beach, South Coast</div>
+          <div class="prop-name">Beachside Oasis Villa</div>
+          <div class="prop-meta">
+            <span>🛏 5 Beds</span>
+            <span>🛁 4 Baths</span>
+            <span>👥 10 Guests</span>
+          </div>
+          <div class="prop-footer">
+            <div class="prop-price">Ksh 10,000 <small>/ night</small></div>
+            <button class="prop-book-btn" onclick="openModal('Beachside Oasis Villa','Diani Beach','Ksh 10,000')">Book Now</button>
+          </div>
+        </div>
+      </div>
+      <!-- Kisumu -->
+      <div class="prop-card reveal reveal-delay-1" data-region="western">
+        <div class="prop-img-wrap">
+          <img src="https://images.unsplash.com/photo-1691515380604-aa4717b4964f?auto=format&fit=crop&w=800&q=80" alt="Kisumu Lakeside" class="prop-img" loading="lazy">
+          <span class="prop-badge">Kisumu</span>
+          <button class="prop-wishlist" onclick="toggleWish(this)" aria-label="Save">♥</button>
+        </div>
+        <div class="prop-body">
+          <div class="prop-location">🌅 Milimani, Kisumu</div>
+          <div class="prop-name">Lakeside Luxury Apartment</div>
+          <div class="prop-meta">
+            <span>🛏 2 Beds</span>
+            <span>🛁 1 Bath</span>
+            <span>👥 4 Guests</span>
+          </div>
+          <div class="prop-footer">
+            <div class="prop-price">Ksh 6,000 <small>/ night</small></div>
+            <button class="prop-book-btn" onclick="openModal('Lakeside Luxury Apartment','Milimani, Kisumu','Ksh 6,000')">Book Now</button>
+          </div>
+        </div>
+      </div>
+      <!-- Kakamega -->
+      <div class="prop-card reveal reveal-delay-2" data-region="western">
+        <div class="prop-img-wrap">
+          <img src="https://images.unsplash.com/photo-1448375240586-882707db888b?auto=format&fit=crop&w=800&q=80" alt="Kakamega Forest" class="prop-img" loading="lazy">
+          <span class="prop-badge">Kakamega</span>
+          <button class="prop-wishlist" onclick="toggleWish(this)" aria-label="Save">♥</button>
+        </div>
+        <div class="prop-body">
+          <div class="prop-location">🌿 Kakamega Forest</div>
+          <div class="prop-name">Rainforest Eco Haven</div>
+          <div class="prop-meta">
+            <span>🛏 1 Bed</span>
+            <span>🛁 1 Bath</span>
+            <span>👥 2 Guests</span>
+          </div>
+          <div class="prop-footer">
+            <div class="prop-price">Ksh 5,000 <small>/ night</small></div>
+            <button class="prop-book-btn" onclick="openModal('Rainforest Eco Haven','Kakamega Forest','Ksh 5,000')">Book Now</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── TERMS ─── -->
+<section class="terms-wrapper" id="terms">
+  <div class="terms-inner">
+    <div class="section-label reveal">Policies &amp; Framework</div>
+    <h2 class="section-heading reveal reveal-delay-1">Lodging Framework<br><em>&amp; Rules</em></h2>
+    <div class="terms-grid">
+      <div class="term-card reveal">
+        <span class="term-icon"><img src="https://images.unsplash.com/photo-1560185127-6ed189bf02f4?auto=format&fit=crop&w=800&q=80" alt="Flexible Layouts" loading="lazy"></span>
+        <h4>Flexible Layouts</h4>
+        <p>Fully serviced 1, 2, 4, and 5-bedroom luxury plans matching varying group sizes and executive configurations — from solo travellers to large delegations.</p>
+      </div>
+      <div class="term-card reveal reveal-delay-1">
+        <span class="term-icon"><img src="https://images.unsplash.com/photo-1580519542036-c47de6196ba5?auto=format&fit=crop&w=800&q=80" alt="Pricing Model" loading="lazy"></span>
+        <h4>Pricing Model</h4>
+        <p>Standardised rates from Ksh 5,000 to Ksh 10,000 per night based on property size, location, and total occupancy level.</p>
+      </div>
+      <div class="term-card reveal reveal-delay-2">
+        <span class="term-icon"><img src="https://images.unsplash.com/photo-1506784365847-bbad939e9335?auto=format&fit=crop&w=800&q=80" alt="Booking Window" loading="lazy"></span>
+        <h4>Booking Window</h4>
+        <p>Minimum 2-night stay required. Bookings must be confirmed at least 1 week in advance. Last-minute requests subject to availability.</p>
+      </div>
+      <div class="term-card reveal">
+        <span class="term-icon"><img src="https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?auto=format&fit=crop&w=800&q=80" alt="Payment" loading="lazy"></span>
+        <h4>Payment</h4>
+        <p>M-Pesa, bank transfer, or card accepted. A 50% deposit secures your reservation. Balance due upon check-in.</p>
+      </div>
+      <div class="term-card reveal reveal-delay-1">
+        <span class="term-icon"><img src="https://images.unsplash.com/photo-1450101499163-c8848c66ca85?auto=format&fit=crop&w=800&q=80" alt="Cancellation Policy" loading="lazy"></span>
+        <h4>Cancellation Policy</h4>
+        <p>Full refund available with 72 hours notice. Cancellations within 24 hours of check-in are non-refundable.</p>
+      </div>
+      <div class="term-card reveal reveal-delay-2">
+        <span class="term-icon"><img src="https://images.unsplash.com/photo-1502005097973-6a7082348e28?auto=format&fit=crop&w=800&q=80" alt="House Rules" loading="lazy"></span>
+        <h4>House Rules</h4>
+        <p>No parties or events without prior approval. Pets by arrangement only. Check-in 2 PM, Check-out 11 AM. Quiet hours 10 PM – 7 AM.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── TESTIMONIALS ─── -->
+<section class="testimonials-wrapper">
+  <div class="section">
+    <div class="section-label reveal">Client Voices</div>
+    <h2 class="section-heading reveal reveal-delay-1">What Our Guests<br><em>Say</em></h2>
+    <div class="testi-grid">
+      <div class="testi-card reveal">
+        <div class="testi-stars">★★★★★</div>
+        <p class="testi-text">Absolutely seamless experience from the airport transfer to checking into the Westlands suite. Everything was exactly as promised — pure luxury.</p>
+        <div class="testi-author">
+          <div class="testi-avatar">AM</div>
+          <div>
+            <div class="testi-name">Amina Mwangi</div>
+            <div class="testi-place">Nairobi Corporate Guest</div>
+          </div>
+        </div>
+      </div>
+      <div class="testi-card reveal reveal-delay-1">
+        <div class="testi-stars">★★★★★</div>
+        <p class="testi-text">Booked the Diani villa for our family holiday — 10 of us! Derrick handled everything including the safari day trips. Best holiday we've had in Kenya.</p>
+        <div class="testi-author">
+          <div class="testi-avatar">JO</div>
+          <div>
+            <div class="testi-name">James Ochieng</div>
+            <div class="testi-place">Family Vacation, Diani</div>
+          </div>
+        </div>
+      </div>
+      <div class="testi-card reveal reveal-delay-2">
+        <div class="testi-stars">★★★★★</div>
+        <p class="testi-text">The flight booking + Mombasa apartment combo was unbeatable value. Responsive on WhatsApp, clean property, no stress. Will definitely rebook.</p>
+        <div class="testi-author">
+          <div class="testi-avatar">SK</div>
+          <div>
+            <div class="testi-name">Sarah Kamau</div>
+            <div class="testi-place">Solo Traveller, Mombasa</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── CONTACT ─── -->
+<section class="contact-wrapper" id="contact">
+  <div class="contact-inner">
+    <div class="contact-info">
+      <div class="section-label">Get In Touch</div>
+      <h2 class="section-heading">Let's Plan<br><em>Your Stay</em></h2>
+      <p>Reach out to book a property, organise flight scheduling, arrange executive transport, or plan a bespoke safari experience.</p>
+      <div class="contact-detail">
+        <div class="contact-icon">📍</div>
+        <div>
+          <h5>Head Office</h5>
+          <p>Runda, Nairobi, Kenya</p>
+        </div>
+      </div>
+      <div class="contact-detail">
+        <div class="contact-icon">📞</div>
+        <div>
+          <h5>Call / WhatsApp</h5>
+          <p><a href="tel:+254797729667">+254 797 729 667</a></p>
+        </div>
+      </div>
+      <div class="contact-detail">
+        <div class="contact-icon">✉️</div>
+        <div>
+          <h5>Email</h5>
+          <p><a href="mailto:dodanga.tech@gmail.com">dodanga.tech@gmail.com</a></p>
+        </div>
+      </div>
+    </div>
+    <div class="booking-form" id="booking-form">
+      <h3>Request a Booking</h3>
+      <div id="form-fields">
+        <div class="form-row">
+          <div class="form-group">
+            <label>First Name</label>
+            <input type="text" placeholder="John" id="fname">
+          </div>
+          <div class="form-group">
+            <label>Last Name</label>
+            <input type="text" placeholder="Doe" id="lname">
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Email</label>
+          <input type="email" placeholder="john@example.com" id="email">
+        </div>
+        <div class="form-group">
+          <label>Phone / WhatsApp</label>
+          <input type="tel" placeholder="+254 7XX XXX XXX" id="phone">
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Service</label>
+            <select id="service">
+              <option value="">Select service</option>
+              <option>Luxury Short-Let</option>
+              <option>Car Hire</option>
+              <option>Flight Booking</option>
+              <option>Safari / Park Booking</option>
+              <option>Full Package</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Location</label>
+            <select id="location">
+              <option value="">Select location</option>
+              <option>Nairobi</option>
+              <option>Mombasa</option>
+              <option>Kisumu</option>
+              <option>Diani</option>
+              <option>Kakamega</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Message / Requirements</label>
+          <textarea placeholder="Tell us about your requirements, dates, guests..." id="message"></textarea>
+        </div>
+        <button class="form-submit" onclick="handleFormSubmit()">Send Inquiry →</button>
+      </div>
+      <div class="form-success" id="form-success">
+        <div class="checkmark">✅</div>
+        <h4>Inquiry Sent!</h4>
+        <p>Thank you! We'll get back to you via WhatsApp or email within 2 hours.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── FOOTER ─── -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <div class="logo-text">LUXE<span>STAY</span></div>
+        <p style="margin-top:.8rem;">Premium hospitality &amp; travel concierge across Kenya. Short-lets, car hire, flights, and safaris.</p>
+      </div>
+      <div class="footer-col">
+        <h5>Quick Links</h5>
+        <ul>
+          <li><a href="#about">About</a></li>
+          <li><a href="#services">Services</a></li>
+          <li><a href="#properties">Properties</a></li>
+          <li><a href="#terms">Terms</a></li>
+          <li><a href="#contact">Contact</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h5>Locations</h5>
+        <ul>
+          <li><a href="#">Nairobi</a></li>
+          <li><a href="#">Mombasa</a></li>
+          <li><a href="#">Kisumu</a></li>
+          <li><a href="#">Diani</a></li>
+          <li><a href="#">Kakamega</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 LuxeStay. All Rights Reserved. Runda, Nairobi.</p>
+      <p style="color:rgba(255,255,255,.15);">Luxury Hospitality &amp; Travel Concierge Kenya</p>
+    </div>
+  </div>
+</footer>
+
+<!-- ─── BOOKING MODAL ─── -->
+<div class="modal-overlay" id="modal-overlay" onclick="closeModalOutside(event)">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>Book Your Stay</h3>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-prop-info">
+      <div>
+        <div class="modal-prop-name" id="modal-name">Property Name</div>
+        <div class="modal-prop-loc" id="modal-loc">Location</div>
+      </div>
+      <div class="modal-prop-price" id="modal-price">Ksh 0</div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Check In</label>
+        <input type="date" id="modal-checkin">
+      </div>
+      <div class="form-group">
+        <label>Check Out</label>
+        <input type="date" id="modal-checkout">
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Your Name</label>
+      <input type="text" placeholder="Full name" id="modal-gname">
+    </div>
+    <div class="form-group">
+      <label>WhatsApp Number</label>
+      <input type="tel" placeholder="+254 7XX XXX XXX" id="modal-wanum">
+    </div>
+    <button class="form-submit" onclick="submitModal()" style="margin-top:.5rem">Confirm Booking →</button>
+  </div>
+</div>
+
+<script>
+// ─── Cursor ───
+const cursor = document.getElementById('cursor');
+document.addEventListener('mousemove', e => {
+  cursor.style.left = e.clientX + 'px';
+  cursor.style.top  = e.clientY + 'px';
+});
+document.querySelectorAll('a,button,.prop-card,.service-card').forEach(el => {
+  el.addEventListener('mouseenter', () => cursor.classList.add('grow'));
+  el.addEventListener('mouseleave', () => cursor.classList.remove('grow'));
+});
+
+// ─── Nav scroll ───
+window.addEventListener('scroll', () => {
+  document.getElementById('main-nav').classList.toggle('scrolled', window.scrollY > 60);
+});
+
+// ─── Hamburger ───
+const hamburger = document.getElementById('hamburger');
+const mobileMenu = document.getElementById('mobile-menu');
+hamburger.addEventListener('click', () => {
+  hamburger.classList.toggle('open');
+  mobileMenu.classList.toggle('open');
+  document.body.style.overflow = mobileMenu.classList.contains('open') ? 'hidden' : '';
+});
+function closeMobileMenu() {
+  hamburger.classList.remove('open');
+  mobileMenu.classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+// ─── Scroll Reveal ───
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); } });
+}, { threshold: 0.12 });
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+// ─── Property Filter ───
+function filterProps(btn, region) {
+  document.querySelectorAll('.prop-filter').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.prop-card').forEach(card => {
+    const show = region === 'all' || card.dataset.region === region;
+    card.style.display = show ? '' : 'none';
+  });
+}
+
+// ─── Wishlist ───
+function toggleWish(btn) {
+  btn.classList.toggle('active');
+  btn.textContent = btn.classList.contains('active') ? '♥' : '♥';
+}
+
+// ─── Booking Modal ───
+function openModal(name, loc, price) {
+  document.getElementById('modal-name').textContent = name;
+  document.getElementById('modal-loc').textContent = loc;
+  document.getElementById('modal-price').textContent = price + ' / night';
+  document.getElementById('modal-overlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeModal() {
+  document.getElementById('modal-overlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+function closeModalOutside(e) {
+  if (e.target.id === 'modal-overlay') closeModal();
+}
+function submitModal() {
+  const name  = document.getElementById('modal-gname').value.trim();
+  const phone = document.getElementById('modal-wanum').value.trim();
+  const prop  = document.getElementById('modal-name').textContent;
+  const ci    = document.getElementById('modal-checkin').value;
+  const co    = document.getElementById('modal-checkout').value;
+  if (!name || !phone) { alert('Please fill in your name and WhatsApp number.'); return; }
+  const msg = `Hi Derrick! I'd like to book the *${prop}*.\n\nName: ${name}\nPhone: ${phone}\nCheck-in: ${ci||'TBD'}\nCheck-out: ${co||'TBD'}`;
+  window.open(`https://wa.me/254797729667?text=${encodeURIComponent(msg)}`, '_blank');
+  closeModal();
+}
+
+// ─── Booking Bar Search ───
+function handleSearch() {
+  const dest    = document.getElementById('dest').value;
+  const checkin = document.getElementById('check-in').value;
+  const guests  = document.getElementById('guests').value;
+  const msg = `Hi Derrick! I'm looking for a property.\n\nDestination: ${dest||'Any'}\nCheck-in: ${checkin||'Flexible'}\nGuests: ${guests}`;
+  window.open(`https://wa.me/254797729667?text=${encodeURIComponent(msg)}`, '_blank');
+}
+
+// ─── Contact Form ───
+function handleFormSubmit() {
+  const fname   = document.getElementById('fname').value.trim();
+  const phone   = document.getElementById('phone').value.trim();
+  const service = document.getElementById('service').value;
+  const message = document.getElementById('message').value.trim();
+  if (!fname || !phone) { alert('Please enter your name and phone number.'); return; }
+  // Show success
+  document.getElementById('form-fields').style.display = 'none';
+  document.getElementById('form-success').style.display = 'block';
+  // Also open WhatsApp
+  const msg = `Hi Derrick! I'd like to inquire about your services.\n\nName: ${fname}\nPhone: ${phone}\nService: ${service||'General'}\nMessage: ${message||'-'}`;
+  setTimeout(() => window.open(`https://wa.me/254797729667?text=${encodeURIComponent(msg)}`, '_blank'), 500);
+}
+
+// ─── Set min dates ───
+const today = new Date().toISOString().split('T')[0];
+['check-in','check-out','modal-checkin','modal-checkout'].forEach(id => {
+  const el = document.getElementById(id);
+  if (el) el.min = today;
+});
+document.getElementById('check-in').addEventListener('change', function() {
+  document.getElementById('check-out').min = this.value || today;
+});
+document.getElementById('modal-checkin').addEventListener('change', function() {
+  document.getElementById('modal-checkout').min = this.value || today;
+});
+</script>
+</body>
+</html>
